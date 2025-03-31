@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const ingredients = require("./ingredients");
 
 const userSchema = new mongoose.Schema({
   username: String,
@@ -19,7 +18,7 @@ const userSchema = new mongoose.Schema({
   ],
 });
 
-userSchema.set(toJSON, {
+userSchema.set("toJSON", {
   transform: (document, returnedObject) => {
     returnedObject.id = returnedObject._id.toString();
     delete returnedObject._id;
