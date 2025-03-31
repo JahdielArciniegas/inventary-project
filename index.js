@@ -43,7 +43,11 @@ app.post("/api/user", async (req, res) => {
 });
 
 app.get("/api/recipe", async (req, res) => {
-  const recipes = await Recipe.find({});
+  const recipes = await Recipe.find({}).populate({
+    path: "ingredients",
+    populate: { path: "ingredient" },
+  });
+
   res.json(recipes);
 });
 
@@ -56,12 +60,19 @@ app.get("/api/ingredient", async (req, res) => {
 app.post("/api/recipe", async (req, res) => {
   const body = req.body;
   const user = await User.findById(body.userId);
+  const processIngredients = body.ingredients.map((ingredient) => {
+    return {
+      ingredient: ingredient.id,
+      amount: ingredient.amount,
+    };
+  });
 
+  console.log(user._id);
   const recipe = new Recipe({
     title: body.title,
     amount: body.amount,
     cost: body.cost,
-    ingredients: body.ingredients,
+    ingredients: processIngredients,
     user: user._id,
   });
 
