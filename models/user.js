@@ -1,9 +1,22 @@
 const mongoose = require("mongoose");
+const ingredients = require("./ingredients");
 
 const userSchema = new mongoose.Schema({
   username: String,
   name: String,
   passwordHash: String,
+  recipes: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Recipe",
+    },
+  ],
+  ingredients: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Ingredient",
+    },
+  ],
 });
 
 userSchema.set(toJSON, {

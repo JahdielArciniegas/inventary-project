@@ -4,6 +4,12 @@ const recipeSchema = new mongoose.Schema({
   title: String,
   amount: String,
   cost: String,
+  ingredients: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Ingredient",
+    },
+  ],
 });
 
 recipeSchema.set("toJSON", {
