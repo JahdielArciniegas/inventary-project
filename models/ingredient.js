@@ -4,6 +4,10 @@ const ingredientSchema = new mongoose.Schema({
   name: String,
   amount: String,
   cost: String,
+  user:{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User"
+  }
 });
 
 ingredientSchema.set("toJSON", {

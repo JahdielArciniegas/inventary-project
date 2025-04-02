@@ -13,6 +13,10 @@ const recipeSchema = new mongoose.Schema({
       amount: String,
     },
   ],
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+  },
 });
 
 recipeSchema.set("toJSON", {
