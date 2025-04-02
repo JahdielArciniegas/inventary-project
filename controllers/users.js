@@ -43,4 +43,9 @@ usersRouter.put("/:id", async(req,res) =>{
   res.json(updatedUser)
 })
 
+usersRouter.delete("/:id", async (req,res) =>{
+  await User.findByIdAndDelete(req.params.id)
+  res.status(204).end()
+})
+
 module.exports = usersRouter

@@ -52,4 +52,9 @@ recipesRouter.put("/:id", async (req,res) => {
   res.json(updatedRecipe)
 })
 
+recipesRouter.delete("/:id", async (req,res) =>{
+  await Recipe.findByIdAndDelete(req.params.id)
+  res.status(204).end()
+})
+
 module.exports = recipesRouter

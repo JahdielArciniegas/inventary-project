@@ -35,4 +35,9 @@ ingredientsRouter.put("/:id", async(req,res) => {
   res.json(updatedIngredient)
 })
 
+ingredientsRouter.delete("/:id", async (req,res) =>{
+  await Ingredient.findByIdAndDelete(req.params.id)
+  res.status(204).end()
+})
+
 module.exports = ingredientsRouter
