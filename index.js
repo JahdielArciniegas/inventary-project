@@ -6,6 +6,7 @@ const mongoose = require("mongoose");
 const usersRouter = require("./controllers/users");
 const recipesRouter = require("./controllers/recipes");
 const ingredientsRouter = require("./controllers/ingredients");
+const loginRouter = require("./controllers/login");
 
 mongoose.set("strictQuery", false);
 
@@ -24,6 +25,7 @@ app.use(express.json());
 app.use("/api/user", usersRouter)
 app.use("/api/recipe", recipesRouter)
 app.use("/api/ingredient", ingredientsRouter)
+app.use("/api/login", loginRouter)
 
 
 
