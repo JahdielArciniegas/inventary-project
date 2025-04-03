@@ -2,15 +2,32 @@ const express = require("express")
 const Ingredient = require("../models/ingredient")
 const ingredientsRouter = express.Router()
 const User = require("../models/user")
+const jwt = require("jsonwebtoken")
+
 
 ingredientsRouter.get("/", async (req, res) => {
     const ingredient = await Ingredient.find({});
     res.json(ingredient);
 });
 
+const getTokenFrom = request => {
+  const authorization = request.get('authorization')
+  if(authorization && authorization.startsWith('Bearer ')){
+    return authorization.replace('Bearer ', '')
+  }
+  return null
+}
+
+
 ingredientsRouter.post("/", async (req, res) => {
-    const { name, amount, cost, userId } = req.body;
-    const user = await User.findById(userId);
+    const { name, amount, cost } = req.body;
+
+    const decodedToken = jwt.verify(getTokenFrom(req), process.env.SECRET)
+    if(!decodedToken){
+      return res.status(401).json({error: "Invalid token"})
+    }
+
+    const user = await User.findById(decodedToken.id);
     const ingredient = new Ingredient({
       name,
       amount,

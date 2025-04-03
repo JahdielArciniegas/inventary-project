@@ -2,6 +2,7 @@ const express = require("express")
 const Recipe = require("../models/recipe")
 const User = require("../models/user")
 const recipesRouter = express.Router()
+const jwt = require("jsonwebtoken")
 
 
 recipesRouter.get("/", async (req, res) => {
@@ -12,9 +13,24 @@ recipesRouter.get("/", async (req, res) => {
     res.json(recipes);
 });
 
+const getTokenFrom = request => {
+  const authorization = request.get('authorization')
+  if(authorization && authorization.startsWith('Bearer ')){
+    return authorization.replace('Bearer ', '')
+  }
+  return null
+}
+
+
 recipesRouter.post("/", async (req, res) => {
     const body = req.body;
-    const user = await User.findById(body.userId);
+
+    const decodedToken = jwt.verify(getTokenFrom(req), process.env.SECRET)
+    if(!decodedToken){
+      return res.status(401).json({error: "Invalid token"})
+    }
+
+    const user = await User.findById(decodedToken.id);
     const processIngredients = body.ingredients.map((ingredient) => {
       return {
         ingredient: ingredient.id,
@@ -37,7 +53,6 @@ recipesRouter.post("/", async (req, res) => {
 
 recipesRouter.put("/:id", async (req,res) => {
   const body = req.body;
-  
   const recipe = {
     title: body.title,
     amount: body.amount,
