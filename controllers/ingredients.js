@@ -10,8 +10,8 @@ ingredientsRouter.get("/", async (req, res) => {
     res.json(ingredient);
 });
 
-ingredientsRouter.get("/:userId", async (req, res) => {
-  const ingredients = await Ingredient.find({user: req.params.userId})
+ingredientsRouter.get("/:idUser", async (req, res) => {
+  const ingredients = await Ingredient.find({user: req.params.idUser})
   res.json(ingredients)
 })
 
@@ -26,7 +26,7 @@ const getTokenFrom = request => {
 
 ingredientsRouter.post("/", async (req, res) => {
     const { name, amount, cost } = req.body;
-
+  console.log(getTokenFrom(req))
     const decodedToken = jwt.verify(getTokenFrom(req), process.env.SECRET)
     if(!decodedToken){
       return res.status(401).json({error: "Invalid token"})
