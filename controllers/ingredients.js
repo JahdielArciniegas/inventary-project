@@ -10,6 +10,11 @@ ingredientsRouter.get("/", async (req, res) => {
     res.json(ingredient);
 });
 
+ingredientsRouter.get("/:userId", async (req, res) => {
+  const ingredients = await Ingredient.find({user: req.params.userId})
+  res.json(ingredients)
+})
+
 const getTokenFrom = request => {
   const authorization = request.get('authorization')
   if(authorization && authorization.startsWith('Bearer ')){

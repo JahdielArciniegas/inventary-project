@@ -21,6 +21,14 @@ const getTokenFrom = request => {
   return null
 }
 
+recipesRouter.get("/:userId", async(req, res) => {
+  const recipes = await Recipe.find({user: req.params.userId}).populate({
+    path: "ingredients",
+    populate: { path: "ingredient" },
+  })
+  res.json(recipes)
+})
+
 
 recipesRouter.post("/", async (req, res) => {
     const body = req.body;
