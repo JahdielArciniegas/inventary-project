@@ -45,7 +45,6 @@ recipesRouter.post("/", async (req, res) => {
         amount: ingredient.amount,
       };
     });
-    console.log(user._id);
     const recipe = new Recipe({
       title: body.title,
       amount: body.amount,

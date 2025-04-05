@@ -26,7 +26,6 @@ const getTokenFrom = request => {
 
 ingredientsRouter.post("/", async (req, res) => {
     const { name, amount, cost } = req.body;
-  console.log(getTokenFrom(req))
     const decodedToken = jwt.verify(getTokenFrom(req), process.env.SECRET)
     if(!decodedToken){
       return res.status(401).json({error: "Invalid token"})
