@@ -57,6 +57,11 @@ ingredientsRouter.put("/:id", async(req,res) => {
 })
 
 ingredientsRouter.delete("/:id", async (req,res) =>{
+  const decodedToken = jwt.verify(getTokenFrom(req), process.env.SECRET)
+    if(!decodedToken){
+      return res.status(401).json({error: "Invalid token"})
+    }
+
   await Ingredient.findByIdAndDelete(req.params.id)
   res.status(204).end()
 })

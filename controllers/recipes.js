@@ -1,6 +1,7 @@
 const express = require("express")
 const Recipe = require("../models/recipe")
 const User = require("../models/user")
+const Ingredient = require("../models/ingredient")
 const recipesRouter = express.Router()
 const jwt = require("jsonwebtoken")
 
@@ -32,6 +33,7 @@ recipesRouter.get("/:idUser", async(req, res) => {
 
 recipesRouter.post("/", async (req, res) => {
     const body = req.body;
+    let cost = 0
 
     const decodedToken = jwt.verify(getTokenFrom(req), process.env.SECRET)
     if(!decodedToken){
@@ -39,7 +41,9 @@ recipesRouter.post("/", async (req, res) => {
     }
 
     const user = await User.findById(decodedToken.id);
-    const processIngredients = body.ingredients.map((ingredient) => {
+    const processIngredients = body.ingredients.map(async(ingredient) => {
+      const ingredientFind = await Ingredient.findById(ingredient.id)
+      cost += ingredientFind.cost * ingredient.amount
       return {
         ingredient: ingredient.id,
         amount: ingredient.amount,
@@ -48,7 +52,7 @@ recipesRouter.post("/", async (req, res) => {
     const recipe = new Recipe({
       title: body.title,
       amount: body.amount,
-      cost: body.cost,
+      cost,
       ingredients: processIngredients,
       user: user._id,
     });
@@ -75,6 +79,11 @@ recipesRouter.put("/:id", async (req,res) => {
 })
 
 recipesRouter.delete("/:id", async (req,res) =>{
+  const decodedToken = jwt.verify(getTokenFrom(req), process.env.SECRET)
+    if(!decodedToken){
+      return res.status(401).json({error: "Invalid token"})
+    }
+
   await Recipe.findByIdAndDelete(req.params.id)
   res.status(204).end()
 })
