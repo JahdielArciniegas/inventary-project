@@ -5,7 +5,6 @@ const Ingredient = require("../models/ingredient")
 const recipesRouter = express.Router()
 const jwt = require("jsonwebtoken")
 
-
 recipesRouter.get("/", async (req, res) => {
     const recipes = await Recipe.find({}).populate({
       path: "ingredients",
@@ -30,29 +29,33 @@ recipesRouter.get("/:idUser", async(req, res) => {
   res.json(recipes)
 })
 
+const calcCost = async(ingredients) => {
+  const totalCost = ingredients.map(async(ingredient) => {
+    const ingredientFind = await Ingredient.findById(ingredient.id)
+    return Number(ingredientFind.cost) * Number(ingredient.amount)
+  })
+  return (await Promise.all(totalCost)).reduce((a, b) => a + b, 0)
+}
 
 recipesRouter.post("/", async (req, res) => {
     const body = req.body;
-    let cost = 0
 
     const decodedToken = jwt.verify(getTokenFrom(req), process.env.SECRET)
     if(!decodedToken){
       return res.status(401).json({error: "Invalid token"})
     }
-
     const user = await User.findById(decodedToken.id);
     const processIngredients = body.ingredients.map(async(ingredient) => {
-      const ingredientFind = await Ingredient.findById(ingredient.id)
-      cost += ingredientFind.cost * ingredient.amount
       return {
         ingredient: ingredient.id,
         amount: ingredient.amount,
       };
-    });
+    })
+    const cost = await calcCost(body.ingredients)
     const recipe = new Recipe({
       title: body.title,
       amount: body.amount,
-      cost,
+      cost : String(cost),
       ingredients: processIngredients,
       user: user._id,
     });
