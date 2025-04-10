@@ -45,7 +45,7 @@ recipesRouter.post("/", async (req, res) => {
       return res.status(401).json({error: "Invalid token"})
     }
     const user = await User.findById(decodedToken.id);
-    const processIngredients = body.ingredients.map(async(ingredient) => {
+    const processIngredients = body.ingredients.map((ingredient) => {
       return {
         ingredient: ingredient.id,
         amount: ingredient.amount,
