@@ -62,6 +62,10 @@ recipesRouter.post("/", async (req, res) => {
     const savedRecipe = await recipe.save();
     user.recipes = user.recipes.concat(savedRecipe._id);
     await user.save();
+    await savedRecipe.populate({
+      path: "ingredients",
+      populate: { path: "ingredient" },
+    })
     res.status(201).json(savedRecipe);
 });
 
