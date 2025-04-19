@@ -3,6 +3,9 @@ const Ingredient = require("../models/ingredient")
 const ingredientsRouter = express.Router()
 const User = require("../models/user")
 const jwt = require("jsonwebtoken")
+const mongoose = require("mongoose")
+const { calcCost } = require("../controllers/recipes")
+const Recipe = require("../models/recipe")
 
 
 ingredientsRouter.get("/", async (req, res) => {
@@ -52,7 +55,16 @@ ingredientsRouter.put("/:id", async(req,res) => {
     cost : body.cost
   }
 
+  const decodedToken = jwt.verify(getTokenFrom(req), process.env.SECRET)
+  if(!decodedToken){
+    return res.status(401).json({error: "Invalid token"})
+  }
   const updatedIngredient = await Ingredient.findByIdAndUpdate(req.params.id, ingredient, { new:true})
+  const recipes = await Recipe.find({ "ingredients.ingredient": req.params.id }).populate({ path: "ingredients", populate: { path: "ingredient" } })
+  recipes.forEach(async (recipe) => {
+    recipe.cost = await calcCost(recipe.ingredients)
+    await recipe.save()
+  })
   res.json(updatedIngredient)
 })
 

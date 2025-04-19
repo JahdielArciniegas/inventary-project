@@ -31,7 +31,12 @@ recipesRouter.get("/:idUser", async(req, res) => {
 
 const calcCost = async(ingredients) => {
   const totalCost = ingredients.map(async(ingredient) => {
-    const ingredientFind = await Ingredient.findById(ingredient.id)
+    let ingredientFind= ""
+    if(!ingredient.ingredient){
+      ingredientFind = await Ingredient.findById(ingredient.id)
+    }else{
+      ingredientFind = ingredient.ingredient
+    }
     return Number(ingredientFind.cost) * Number(ingredient.amount)
   })
   return (await Promise.all(totalCost)).reduce((a, b) => a + b, 0)
@@ -71,11 +76,23 @@ recipesRouter.post("/", async (req, res) => {
 
 recipesRouter.put("/:id", async (req,res) => {
   const body = req.body;
+  const decodedToken = jwt.verify(getTokenFrom(req), process.env.SECRET)
+  if(!decodedToken){
+    return res.status(401).json({error: "Invalid token"})
+  }
+  const processIngredients = body.ingredients.map((ingredient) => {
+    return {
+      ingredient: ingredient.id,
+      amount: ingredient.amount,
+    };
+  })
+  const cost = await calcCost(body.ingredients)
+  
   const recipe = {
     title: body.title,
     amount: body.amount,
-    cost: body.cost,
-    ingredients: body.ingredients,
+    cost: String(cost),
+    ingredients: processIngredients,
   }
 
   const updatedRecipe = await Recipe.findByIdAndUpdate(req.params.id, recipe, { new: true}).populate({
@@ -96,3 +113,4 @@ recipesRouter.delete("/:id", async (req,res) =>{
 })
 
 module.exports = recipesRouter
+module.exports.calcCost = calcCost
