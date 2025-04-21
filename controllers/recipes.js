@@ -60,6 +60,7 @@ recipesRouter.post("/", async (req, res) => {
     const recipe = new Recipe({
       title: body.title,
       amount: body.amount,
+      unit : body.unit,
       cost : String(cost),
       ingredients: processIngredients,
       user: user._id,
@@ -91,6 +92,7 @@ recipesRouter.put("/:id", async (req,res) => {
   const recipe = {
     title: body.title,
     amount: body.amount,
+    unit : body.unit,
     cost: String(cost),
     ingredients: processIngredients,
   }

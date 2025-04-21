@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 
 const recipeSchema = new mongoose.Schema({
   title: String,
+  unit : String,
   amount: String,
   cost: String,
   ingredients: [
@@ -22,6 +23,10 @@ const recipeSchema = new mongoose.Schema({
 recipeSchema.set("toJSON", {
   transform: (document, returnedObject) => {
     returnedObject.id = returnedObject._id.toString();
+    returnedObject.ingredients.map((ingredient) => {
+      ingredient.id = ingredient._id.toString();
+      delete ingredient._id;
+    });
     delete returnedObject._id;
     delete returnedObject.__v;
   },
