@@ -106,11 +106,15 @@ recipesRouter.put("/:id", async (req,res) => {
 
 recipesRouter.delete("/:id", async (req,res) =>{
   const decodedToken = jwt.verify(getTokenFrom(req), process.env.SECRET)
-    if(!decodedToken){
-      return res.status(401).json({error: "Invalid token"})
-    }
+  if(!decodedToken){
+    return res.status(401).json({error: "Invalid token"})
+  }
+  const user = await User.findById(decodedToken.id);
+  user.recipes = user.recipes.filter((recipe) => recipe.toString() !== req.params.id);
+  await user.save();
 
   await Recipe.findByIdAndDelete(req.params.id)
+  
   res.status(204).end()
 })
 

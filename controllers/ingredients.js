@@ -70,9 +70,12 @@ ingredientsRouter.put("/:id", async(req,res) => {
 
 ingredientsRouter.delete("/:id", async (req,res) =>{
   const decodedToken = jwt.verify(getTokenFrom(req), process.env.SECRET)
-    if(!decodedToken){
-      return res.status(401).json({error: "Invalid token"})
-    }
+  if(!decodedToken){
+    return res.status(401).json({error: "Invalid token"})
+  }
+  const user = await User.findById(decodedToken.id);
+  user.ingredients = user.ingredients.filter((ingredient) => ingredient.toString() !== req.params.id);
+  await user.save();
 
   await Ingredient.findByIdAndDelete(req.params.id)
   res.status(204).end()
