@@ -1,7 +1,7 @@
-const express = require("express")
+import express from "express";
 const usersRouter = express.Router()
-const User = require("../models/user")
-const bcrypt = require("bcrypt")
+import User from "../models/user.js"
+import bcrypt from "bcrypt"
 
 usersRouter.get("/", async (req, res) => {
     const users = await User.find({})
@@ -48,4 +48,4 @@ usersRouter.delete("/:id", async (req,res) =>{
   res.status(204).end()
 })
 
-module.exports = usersRouter
+export default usersRouter

@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const ingredientSchema = new mongoose.Schema({
   name: String,
@@ -18,4 +18,4 @@ ingredientSchema.set("toJSON", {
   },
 });
 
-module.exports = mongoose.model("Ingredient", ingredientSchema);
+export default mongoose.model("Ingredient", ingredientSchema);

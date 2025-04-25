@@ -1,11 +1,10 @@
-const express = require("express")
-const Ingredient = require("../models/ingredient")
+import express from "express";
+import Ingredient from "../models/ingredient.js"
 const ingredientsRouter = express.Router()
-const User = require("../models/user")
-const jwt = require("jsonwebtoken")
-const mongoose = require("mongoose")
-const { calcCost } = require("../controllers/recipes")
-const Recipe = require("../models/recipe")
+import User from "../models/user.js"
+import jwt from "jsonwebtoken"
+import { calcCost } from "../controllers/recipes.js"
+import Recipe from "../models/recipe.js"
 
 
 ingredientsRouter.get("/", async (req, res) => {
@@ -81,4 +80,4 @@ ingredientsRouter.delete("/:id", async (req,res) =>{
   res.status(204).end()
 })
 
-module.exports = ingredientsRouter
+export default ingredientsRouter

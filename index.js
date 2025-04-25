@@ -1,12 +1,12 @@
-const express = require("express");
+import express from "express";
 const app = express();
-const cors = require("cors");
-const { PORT, mongoUrl } = require("./utils/config");
-const mongoose = require("mongoose");
-const usersRouter = require("./controllers/users");
-const recipesRouter = require("./controllers/recipes");
-const ingredientsRouter = require("./controllers/ingredients");
-const loginRouter = require("./controllers/login");
+import cors from "cors";
+import { PORT, mongoUrl } from "./utils/config.js";
+import mongoose from "mongoose";
+import usersRouter from "./controllers/users.js";
+import recipesRouter from "./controllers/recipes.js";
+import ingredientsRouter from "./controllers/ingredients.js";
+import loginRouter from "./controllers/login.js";
 
 mongoose.set("strictQuery", false);
 

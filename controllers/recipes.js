@@ -1,9 +1,9 @@
-const express = require("express")
-const Recipe = require("../models/recipe")
-const User = require("../models/user")
-const Ingredient = require("../models/ingredient")
+import express from "express";
+import Recipe from "../models/recipe.js"
+import User from "../models/user.js"
+import Ingredient from "../models/ingredient.js"
 const recipesRouter = express.Router()
-const jwt = require("jsonwebtoken")
+import jwt from "jsonwebtoken"
 
 recipesRouter.get("/", async (req, res) => {
     const recipes = await Recipe.find({}).populate({
@@ -29,7 +29,7 @@ recipesRouter.get("/:idUser", async(req, res) => {
   res.json(recipes)
 })
 
-const calcCost = async(ingredients) => {
+export const calcCost = async(ingredients) => {
   const totalCost = ingredients.map(async(ingredient) => {
     let ingredientFind= ""
     if(!ingredient.ingredient){
@@ -118,5 +118,4 @@ recipesRouter.delete("/:id", async (req,res) =>{
   res.status(204).end()
 })
 
-module.exports = recipesRouter
-module.exports.calcCost = calcCost
+export default recipesRouter
